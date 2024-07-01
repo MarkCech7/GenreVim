@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Music Genre Classification</title>
+</head>
+<body>
+    <h1>Music Genre Classification</h1>
+    <form method="post" action="/predict">
+        <label for="url">YouTube URL:</label>
+        <input type="text" id="url" name="url" required><br>
+        <button type="submit">Predict Genre</button>
+    </form>
+    {% if genre %}
+        <h2>{{ genre }}</h2>
+        <h3>Recommendations:</h3>
+        <ul>
+            {% for song in recommendations %}
+                <li><a href="{{ song.youtube_link }}">{{ song.name }}</a> ({{ song.genre }})</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>
