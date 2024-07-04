@@ -1,5 +1,6 @@
 accelerate==0.31.0
 audioread==3.0.1
+beautifulsoup4==4.12.3
 blinker==1.8.2
 certifi==2024.6.2
 cffi==1.16.0
@@ -44,6 +45,7 @@ safetensors==0.4.3
 scikit-learn==1.5.0
 scipy==1.13.1
 soundfile==0.12.1
+soupsieve==2.5
 soxr==0.3.7
 SQLAlchemy==2.0.31
 sympy==1.12.1
