@@ -28,11 +28,16 @@ class Song(db.Model):
         return f'<Song {self.name}>'
 
 def download_youtube_video(url):
-    yt = YouTube(url,use_oauth=True, allow_oauth_cache=True)
+    try:
+        yt = YouTube(url, use_oauth=True, allow_oauth_cache=True)
+    except Exception as e:
+        raise ValueError("Invalid YouTube URL.")
+       
     if yt.length > 7*60:  # Set a maximum video length
         raise ValueError("Video is too long. Maximum length is 7 minutes.")
     if yt.length < 30:  # Set a minimum video length 
         raise ValueError("Video is too short. Minimum length is 30 seconds.")
+    
     stream = yt.streams.filter(only_audio=True).first()
     out_file = stream.download(output_path="download/")
     return out_file
@@ -58,6 +63,7 @@ def prediction(wav_file):
     music_prediction = music_classifier(data, sampling_rate=target_sr)
     if music_prediction[0]['label'] == 'Non Music':
         return None, "The provided video does not contain music. Please try another video."
+    
     genre_classifier = pipeline("audio-classification", model="MarekCech/GenreVim-HuBERT-3")
     genre_prediction = genre_classifier(data, sampling_rate=target_sr)
     return genre_prediction[0]['label'], None
@@ -77,23 +83,34 @@ def index():
 @app.route("/predict", methods=['POST'])
 def predict():
     url = request.form['url']
-    file = download_youtube_video(url)
-    title = get_video_title(url)
-    wav_file = convert_to_wav(file)
-    genre, error_message = prediction(wav_file)
+    
+    try:
+        existing_song = Song.query.filter_by(youtube_link=url).first()
+        if existing_song:
+            return render_template('predict.html', genre=f"Genre of '{existing_song.name}' is '{existing_song.genre}'", recommendations=[])
         
-    if error_message:
-        os.remove(file)
+        file = download_youtube_video(url)
+        title = get_video_title(url)
+        wav_file = convert_to_wav(file)
+        genre, error_message = prediction(wav_file)
+        
+        if error_message:
+            os.remove(file)
+            os.remove(wav_file)
+            return render_template('error.html', message=error_message)
+    
+        os.remove(file)  
         os.remove(wav_file)
-        return render_template('predict.html', genre=error_message)
     
-    #genre = genre[0]['label']
+        new_song = Song(name=title, genre=genre, youtube_link=url)
+        db.session.add(new_song)
+        db.session.commit()
     
-    new_song = Song(name=title, genre=genre, youtube_link=url)
-    db.session.add(new_song)
-    db.session.commit()
-    
-    recommendations = Song.query.filter_by(genre=genre).all()
-    return render_template('predict.html', genre=f"Genre of '{title}' is '{genre}'", recommendations=recommendations)
+        recommendations = Song.query.filter_by(genre=genre).all()
+        return render_template('predict.html', genre=f"Genre of '{title}' is '{genre}'", recommendations=recommendations)
+    except ValueError as ve:
+        return render_template('error.html', message=str(ve))
+    except Exception as e:
+        return render_template('error.html', message=str(e))
 
 
