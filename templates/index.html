@@ -3,13 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>GenreVim</title>
 </head>
 <body>
-<form method="POST" action="/predict">
-    <label for="url">Enter url adress:</label>
-    <input type="text" name="url" id="url" required/>
-    <button>Send</button>
-</form>
+    <h1>GenreVim - Music Genre Classification</h1>
+    <form action="/predict" method="post">
+        <label for="url">Enter YouTube URL:</label>
+        <input type="text" id="url" name="url" required>
+        <button type="submit">Predict Genre</button>
+    </form>
+    
+    <h2>Recent Songs</h2>
+    <ul>
+        {% for song in recent_songs %}
+            <li>
+                <div>
+                    {{ song.name }}, Genre: {{ song.genre }}
+                </div>
+                <iframe width="320" height="180" src="{{ song.embed_url }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+            </li>
+        {% endfor %}
+    </ul>
 </body>
 </html>
+

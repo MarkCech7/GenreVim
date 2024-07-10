@@ -7,6 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from bs4 import BeautifulSoup
 import requests
 import os
+from datetime import datetime
 
 app = Flask(__name__)
 # creating db model
@@ -14,18 +15,20 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///music_database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-with app.app_context():
-    print("test")
-    db.create_all()
-
 class Song(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     genre = db.Column(db.String(50), nullable=False)
     youtube_link = db.Column(db.String(200), nullable=False)
+    date = db.Column(db.DateTime, default=datetime.utcnow)
+    score = db.Column(db.Float, nullable=False)
+    embed_url = db.Column(db.String(200), nullable=False)
 
     def __repr__(self):
         return f'<Song {self.name}>'
+    
+with app.app_context():
+    db.create_all()
 
 def download_youtube_video(url):
     try:
@@ -40,7 +43,8 @@ def download_youtube_video(url):
     
     stream = yt.streams.filter(only_audio=True).first()
     out_file = stream.download(output_path="download/")
-    return out_file
+    embed_url = yt.embed_url
+    return out_file, embed_url
 
 def get_video_title(url):
     response = requests.get(url)
@@ -66,7 +70,7 @@ def prediction(wav_file):
     
     genre_classifier = pipeline("audio-classification", model="MarekCech/GenreVim-HuBERT-3")
     genre_prediction = genre_classifier(data, sampling_rate=target_sr)
-    return genre_prediction[0]['label'], None
+    return genre_prediction[0], None
 
 """
 @app.route("/",methods=['GET', 'POST'])
@@ -78,7 +82,8 @@ def index():
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    recent_songs = Song.query.order_by(Song.date.desc()).limit(5).all()
+    return render_template("index.html", recent_songs=recent_songs)
 
 @app.route("/predict", methods=['POST'])
 def predict():
@@ -87,27 +92,36 @@ def predict():
     try:
         existing_song = Song.query.filter_by(youtube_link=url).first()
         if existing_song:
-            return render_template('predict.html', genre=f"Genre of '{existing_song.name}' is '{existing_song.genre}'", recommendations=[])
+            recommendations = Song.query.filter(
+                Song.genre == existing_song.genre,
+                Song.youtube_link != url
+            ).order_by(Song.score.desc()).limit(3).all()
+            return render_template('predict.html', genre=f"Genre of '{existing_song.name}' is '{existing_song.genre}'", recommendations=recommendations, embed_url=existing_song.embed_url)
         
-        file = download_youtube_video(url)
+        file, embed_url = download_youtube_video(url)
         title = get_video_title(url)
         wav_file = convert_to_wav(file)
-        genre, error_message = prediction(wav_file)
+        result, error_message = prediction(wav_file)
+        
+        genre = result['label']
+        score = result['score']
         
         if error_message:
-            os.remove(file)
-            os.remove(wav_file)
             return render_template('error.html', message=error_message)
     
+        new_song = Song(name=title, genre=genre, youtube_link=url, date=datetime.utcnow(), score=score, embed_url=embed_url)
+        db.session.add(new_song)
+        db.session.commit()
+        
         os.remove(file)  
         os.remove(wav_file)
     
-        new_song = Song(name=title, genre=genre, youtube_link=url)
-        db.session.add(new_song)
-        db.session.commit()
-    
-        recommendations = Song.query.filter_by(genre=genre).all()
-        return render_template('predict.html', genre=f"Genre of '{title}' is '{genre}'", recommendations=recommendations)
+        recommendations = Song.query.filter(
+            Song.genre==genre, 
+            Song.youtube_link!=url
+            ).order_by(Song.score.desc()).limit(3).all()
+
+        return render_template('predict.html', genre=f"Genre of '{title}' is '{genre}'", recommendations=recommendations, embed_url=embed_url)
     except ValueError as ve:
         return render_template('error.html', message=str(ve))
     except Exception as e:
