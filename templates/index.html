@@ -10,6 +10,11 @@
     <style>
         @import url('https://fonts.cdnfonts.com/css/prototype');
 
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        
         #loader {
             display: none;
         }
@@ -29,15 +34,9 @@
             }
         }
 
-        div.absolute {
-            position: absolute;
-            top: 160px;
-            right: 2px;
-        }
-
         .logo {
-            margin-right: 0%;
             text-align: center;
+            margin: 10px 0;
         }
 
         .soundwave {
@@ -70,49 +69,112 @@
 
         .header {
             border-bottom: 6px solid #ead4bd;
-            background-color:rgb(255 254 247)
-        }
-
-        .fixed-top {
+            background-color: rgb(255, 254, 247);
             position: fixed;
+            width: 100%;
             top: 0;
-            right: 0;
-            left: 0;
-            z-index: 1030;
+            z-index: 1000;
         }
 
-        .body {
-            display: block;
-            margin-top: 115px;
+        .main-content {
+            padding-top: 200px;
+            padding: 20px;
         }
 
         .desc {
-            font-family: Arial, Helvetica, sans-serif;
-            font-weight: bold;
-            letter-spacing: -0.5px;
-            margin-left: 36.5%;
+            text-align: center;
+            padding-top: 100px;
         }
 
         .desc2 {
-            font-family: Arial, Helvetica, sans-serif;
+            text-align: center;
             color: rgb(136, 134, 134);
-            letter-spacing: -0.5px;
-            margin-left: 34.5%;
-            margin-top: -15px;
-        }
-        
-        .youtube {
-            margin-top: -10px;
+            margin: 5px;
+            padding: -1px;
         }
 
-        .form
-        {
-            margin-left: 30px;
-            margin-top: -23px;
+        .youtube {
+            margin-top: 1px;
+            text-align: center;
+            position: static;
+            margin-bottom: -3px;
+        }
+
+        .form {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .recent-songs {
+            max-width: 1000px;
+            margin: 20px auto;
+        }
+
+        .recent-songs ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .recent-songs li {
+            margin: 20px 0;
+        }
+
+        .embed-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .embed-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        @media (min-width: 600px) {
+            .form input {
+                width: 300px;
+                padding: 8px;
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 599px) {
+            .logo {
+                font-size: 28px;
+            }
+
+            .text {
+                font-size: 28px;
+            }
+
+            .desc, desc2 {
+                font-size: 14px;
+                text-align: center;
+                position: fixed;
+            }
+
+            .form input {
+                width: 100%;
+                padding: 8px;
+                font-size: 14px;
+            }
+
+            .form button {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
-<nav class="header fixed-top">
+
+<body>
+<nav class="header">
     <div class="logo">
         <div class="soundwave">
             <div class="bar" style="height: 20px; margin-bottom: 20px;"></div>
@@ -132,16 +194,13 @@
         </div>
     </div>
 </nav>
-<body class="body">
+<div class="main-content">
     <h1 class="desc">Music Genre Classification</h1>
-    <h4 class="desc2">GenreVim performs genre classification of music from YouTube</h6>
-    <div>
-    <a title="Original: YouTube Vector:  Jarould, Public domain, via Wikimedia Commons" href="https://www.youtube.com/" add a target="_blank"><img width="25" class="youtube" clalt="YouTube full-color icon (2017)" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/512px-YouTube_full-color_icon_%282017%29.svg.png?20240107144800"></a>
+    <h4 class="desc2">GenreVim performs genre classification of music from <a title="Original: YouTube Vector:  Jarould, Public domain, via Wikimedia Commons" href="https://www.youtube.com/" target="_blank"><img width="25" class="youtube" alt="YouTube full-color icon (2017)" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/512px-YouTube_full-color_icon_%282017%29.svg.png?20240107144800"></a> YouTube</h4>
     <form hx-post="/predict" hx-target="#result" hx-swap="innerHTML" hx-indicator="#loader" class="form">
         <input type="text" id="url" name="url" required placeholder="Enter Youtube URL">
         <button type="submit">Predict Genre</button>
     </form>
-    </div>
     <div id="result"></div>
     <div id="loader">
         <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -152,21 +211,22 @@
         </svg>
         Processing...
     </div>
-    <div class="absolute">
-    <h2>Recent Songs</h2>
-    <ul>
-        {% for song in recent_songs %}
-        <li>
-            <div>
-                {{ song.name }}, Genre: {{ song.genre }}
-            </div>
-            <iframe width="320" height="180" src="{{ song.embed_url }}" frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerpolicy="strict-origin-when-cross-origin"></iframe>
-        </li>
-        {% endfor %}
-    </ul>
+    <div class="recent-songs">
+        <h3>Recent Songs</h3>
+        <ul>
+            {% for song in recent_songs %}
+            <li>
+                <div>
+                    {{ song.name }}, Genre: {{ song.genre }}
+                </div>
+                <div class="embed-container">
+                    <iframe src="https://www.youtube.com/embed/{{ song.video_id }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
     </div>
+</div>
 </body>
 
 </html>
