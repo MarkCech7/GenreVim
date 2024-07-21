@@ -82,7 +82,7 @@ def index():
 
 @app.route("/")
 def index():
-    recent_songs = Song.query.order_by(Song.date.desc()).limit(5).all()
+    recent_songs = Song.query.order_by(Song.date.desc()).limit(6).all()
     return render_template("index.html", recent_songs=recent_songs)
 
 @app.route("/predict", methods=['POST'])

@@ -1,14 +1,19 @@
-
-<h2>{{ genre }}</h2>
-<h3>Recommendations:</h3>
-<div>
-<ul>
-    {% for song in recommendations %}
-        <li>
-            <div>
-                {{ song.name }}, Genre: {{ song.genre }}
-            </div>
-            <iframe width="320" height="180" src="{{ song.embed_url }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"></iframe>
-        </li>
-    {% endfor %}
-</ul>
+<h2 class="prediction">{{ genre }}</h2>
+<h3 class="recommended-songs-heading">Recommendations:</h3>
+<div class="recommended-songs">
+    <ul class="recommended-songs-list">
+        {% for song in recommendations %}
+            <li>
+                <div class="embed-container">
+                    <iframe width="400" height="225" src="{{ song.embed_url }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                </div>
+                <div class="song-title">
+                    {{ song.name }}
+                </div>
+                <div class="song-genre">
+                    {{ song.genre }}
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+    </div>
