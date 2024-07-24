@@ -1,11 +1,11 @@
 <h2 class="prediction">{{ genre }}</h2>
-<h3 class="recommended-songs-heading">Recommendations:</h3>
+<h3 class="recommended-songs-heading">Recommendations</h3>
 <div class="recommended-songs">
     <ul class="recommended-songs-list">
         {% for song in recommendations %}
             <li>
                 <div class="embed-container">
-                    <iframe width="400" height="225" src="{{ song.embed_url }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                    <a href="{{ song.youtube_link }}" target="_blank"><img width="400" height="225"src="{{ song.thumbnail_url }}"></img></a>
                 </div>
                 <div class="song-title">
                     {{ song.name }}

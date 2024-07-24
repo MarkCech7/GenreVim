@@ -19,10 +19,10 @@ class Song(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     genre = db.Column(db.String(50), nullable=False)
-    youtube_link = db.Column(db.String(200), nullable=False)
+    youtube_link = db.Column(db.String(200), nullable=False, unique=True)
     date = db.Column(db.DateTime, default=datetime.utcnow)
     score = db.Column(db.Float, nullable=False)
-    embed_url = db.Column(db.String(200), nullable=False)
+    thumbnail_url = db.Column(db.String(200), nullable=False)
 
     def __repr__(self):
         return f'<Song {self.name}>'
@@ -43,8 +43,9 @@ def download_youtube_video(url):
     
     stream = yt.streams.filter(only_audio=True).first()
     out_file = stream.download(output_path="download/")
-    embed_url = yt.embed_url
-    return out_file, embed_url
+    #embed_url = yt.embed_url
+    thumbnail_url = yt.thumbnail_url
+    return out_file, thumbnail_url
 
 def get_video_title(url):
     response = requests.get(url)
@@ -96,9 +97,9 @@ def predict():
                 Song.genre == existing_song.genre,
                 Song.youtube_link != url
             ).order_by(Song.score.desc()).limit(3).all()
-            return render_template('predict.html', genre=f"Genre of '{existing_song.name}' is '{existing_song.genre}'", recommendations=recommendations, embed_url=existing_song.embed_url)
+            return render_template('predict.html', genre=f"Genre of '{existing_song.name}' is '{existing_song.genre}'", recommendations=recommendations, thumbnail_url=existing_song.thumbnail_url)
         
-        file, embed_url = download_youtube_video(url)
+        file, thumbnail_url = download_youtube_video(url)
         title = get_video_title(url)
         wav_file = convert_to_wav(file)
         result, error_message = prediction(wav_file)
@@ -109,19 +110,19 @@ def predict():
         if error_message:
             return render_template('error.html', message=error_message)
     
-        new_song = Song(name=title, genre=genre, youtube_link=url, date=datetime.utcnow(), score=score, embed_url=embed_url)
+        new_song = Song(name=title, genre=genre, youtube_link=url, date=datetime.utcnow(), score=score, thumbnail_url=thumbnail_url)
         db.session.add(new_song)
         db.session.commit()
-        
-        os.remove(file)  
-        os.remove(wav_file)
     
         recommendations = Song.query.filter(
             Song.genre==genre, 
             Song.youtube_link!=url
             ).order_by(Song.score.desc()).limit(3).all()
+        
+        os.remove(file)  
+        os.remove(wav_file)
 
-        return render_template('predict.html', genre=f"Genre of '{title}' is '{genre}'", recommendations=recommendations, embed_url=embed_url)
+        return render_template('predict.html', genre=f"Genre of {title}'is {genre}", recommendations=recommendations, thumbnail_url=thumbnail_url)
     except ValueError as ve:
         return render_template('error.html', message=str(ve))
     except Exception as e:

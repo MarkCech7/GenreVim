@@ -14,9 +14,32 @@
             margin: 0;
             font-family: Arial, sans-serif;
         }
+
+        .main-content {
+            transition: filter 0.3s ease;
+        }
+
+        .main-content.htmx-request {
+            filter: blur(5px);
+            pointer-events: none;
+        }
+
+        .blurred {
+            filter: blur(5px);
+            pointer-events: none;
+        }
         
         #loader {
             display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
         }
 
         #loader.htmx-request {
@@ -125,7 +148,7 @@
 
         .recommended-songs {
             max-width: 1400px;
-            margin: 20px auto;
+            margin: 0px auto;
         }
 
         .recommended-songs ul {
@@ -143,7 +166,7 @@
             margin: 0;
         }
 
-        .embed-container iframe {
+        .embed-container img {
             border-radius: 20px;
         }
 
@@ -276,7 +299,6 @@
                 d="M10.14,1.16a11,11,0,0,0-9,8.92A1.59,1.59,0,0,0,2.46,12,1.52,1.52,0,0,0,4.11,10.7a8,8,0,0,1,6.66-6.61A1.42,1.42,0,0,0,12,2.69h0A1.57,1.57,0,0,0,10.14,1.16Z"
                 class="spinner_ajPY" />
         </svg>
-        Processing...
     </div>
     <div class="recent-songs">
         <h3 class="recent-songs-heading">Recent Songs</h3>
@@ -284,7 +306,7 @@
             {% for song in recent_songs %}
             <li>
                 <div class="embed-container">
-                    <iframe width="480" height="270" src="https://www.youtube.com/embed/{{ song.id }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                    <a href="{{ song.youtube_link }}" target="_blank"><img width="480" height="270"src="{{ song.thumbnail_url }}"></img></a>
                 </div>
                 <div class="song-title">
                     {{ song.name }}
