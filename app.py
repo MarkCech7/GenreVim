@@ -86,6 +86,10 @@ def index():
     recent_songs = Song.query.order_by(Song.date.desc()).limit(6).all()
     return render_template("index.html", recent_songs=recent_songs)
 
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
 @app.route("/predict", methods=['POST'])
 def predict():
     url = request.form['url']
