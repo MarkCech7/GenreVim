@@ -188,16 +188,48 @@
 
         .features-text {
             padding-bottom: 5px;
-            padding-left: 25%;
+            padding-left: 6%;
+            padding-right: 3%;
             font-family: Arial, sans-serif;
-            font-size: 17px;
+            display: grid;
+            grid-template-columns: repeat(3, 5fr);
+            margin: 20px auto;
+            list-style-type: none;
+            column-gap: 40px auto;
             justify-content: center;
-            max-width: 50%;
+        }
+
+        .features-content { 
+            max-width: 90%;
+            margin: auto;
         }
 
         .features-text li { 
-            text-align: justify;
+            text-align: center;
+            padding-top: 30px;
+            /padding-left: 10%;
+            /display: flex;
             align-items: center;
+            /justify-content: center;
+        }
+
+        .features-div { 
+            background-color: rgb(250, 237, 216);
+            width: 400px; 
+            height: 200px; 
+            border-radius: 20px;
+            justify-content: center;
+        }
+
+        .features-text-title { 
+            text-align: center;
+            font-size: 19px;
+            justify-content: center;
+        }
+
+        .features-text-desc { 
+            padding-top: 25px;
+            font-size: 17px;
         }
 
         .about-title {
@@ -215,6 +247,7 @@
         }
         
         .supported-genres {
+            padding-top: 10px;
             font-family: Arial, sans-serif;
             font-size: 25px;
             text-align: center;
@@ -232,56 +265,34 @@
 
         .supported-genres-ul {
             padding-bottom: 5px;
-            padding-left: 41%;
+            padding-left: 4%;
+            padding-right: 6%;
             font-family: Arial, sans-serif;
             font-size: 17px;
             justify-content: center;
-            max-width: 25%;
             display: grid;
-            grid-template-columns: repeat(2, 5fr);
-            column-gap: 20px;
+            grid-template-columns: repeat(9, 5fr);
+            column-gap: 15px;
+            row-gap: 20px;
+            list-style: none;
+            max-width: 100%;
         }
 
-        .supported-genres li {
-            text-align: justify;
+        .supported-genres-ul li {
+            border-radius: 20px;
+            background-color:rgb(250, 237, 216);
+            width: 135px;
+            height: 50px;
+            display: flex;
             align-items: center;
+            justify-content: center;
+            font-weight: 300;
         }
 
-        .button:hover {
-            border-color: #9ca3af;
-        }
-
-        .recent-songs-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            margin: 0;
-        }
-
-        .song-title {
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .song-genre {
-            opacity: 0.75;
-            font-size: 16px;
-            font-weight: 400;
-        }
-
-        .recent-songs-heading {
-            font-size: 22px;
-            margin-top: 20px;
-            margin-bottom: 0px;
-        }
-
-        .recommended-songs-heading {
-            font-size: 22px;
-            margin-left: 40px;
-            margin-bottom: 0px;
-        }
-
-        .prediction {
-            text-align: center;
+        .supported-genres-div {
+            margin: auto;
+            align-items: center;
+            max-width: 1000px;
         }
 
         @media (min-width: 600px) {
@@ -356,13 +367,31 @@
     <h6 class="about-text">GenreVim is a web application designed to provide music genre classification for music videos from YouTube. 
         Leveraging the power of <a href="https://arxiv.org/abs/2110.01900" style="font-weight: bold;">DistilHuBERT</a>, GenreVim analyzes audio features and patterns to identify the genre of a given music video.</h6>
     <h5 class="features">Features</h5>
+    <div class="features-content">
         <ul class="features-text">
-            <li><b>Accurate Genre Classification:</b> GenreVim uses sophisticated algorithms to classify music genres accurately.</li>
-            <li><b>Easy-to-Use Interface:</b> The user-friendly interface makes it simple for anyone to use. Just enter the YouTube URL of the music video, and GenreVim will do the rest.</li>
-            <li><b>Recent and Recommended Songs:</b> GenreVim not only provides genre classification but also offers a curated list of recent and recommended songs based genre.</li>
+            <li>
+                <div class="features-div"></div>
+                    <div class="features-text-title"><b>Accurate Genre Classification</b></div>
+                    <div class="features-text-desc">GenreVim uses sophisticated HuBERT algorithm to classify music genres accurately.</div>
+                </div>
+            </li>
+            <li>
+                <div class="features-div"></div>
+                    <div class="features-text-title"><b>Easy-to-Use Interface</b></div>
+                    <div class="features-text-desc">The user-friendly interface makes it simple for anyone to use. Just enter the YouTube URL of the music video, and GenreVim will do the rest.</div>
+                </div>
+            </li>
+            <li>
+                <div class="features-div">
+                    <div class="features-text-title"><b>Recent and Recommended Songs</b></div>
+                    <div class="features-text-desc">GenreVim not only provides genre classification but also offers a curated list of recent and recommended songs based genre.</div>
+                </div>
+            </li>
         </ul>
+    </div>
     <h5 class="supported-genres">Supported Genres</h5>
     <h6 class="supported-genres-desc">GenreVim supports up to 18 genres including:</h6>
+    <div class="supported-genres-div">
         <ul class="supported-genres-ul">
             <li>Blues</li>
             <li>Classical music</li>
@@ -383,6 +412,7 @@
             <li>Rock</li>
             <li>Trap</li>
         </ul>
+    </div>
 </div>
 </body>
 
