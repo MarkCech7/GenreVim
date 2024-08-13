@@ -1,13 +1,7 @@
-{% extends 'base.html' %}
-
-{% block header%}
-<a href="/about" class="main">About</a>
-{% endblock %}
-
-{% block content %}
-<h2 class="prediction">{{ genre }}</h2>
-<h3 class="recommended-songs-heading">Recommendations</h3>
+<h2 class="prediction"><span class="predicttext">Genre of</span> {{ title }} <span class="predicttext">is</span> {{
+    genre }}.</h2>
 <div class="recommended-songs">
+    <h3 class="recommended-songs-heading">Recommendations</h3>
     <ul class="recommended-songs-list">
         {% for song in recommendations %}
         <li>
@@ -15,7 +9,7 @@
                 <a href="{{ song.youtube_link }}" target="_blank"><img width="400" height="225"
                         src="{{ song.thumbnail_url }}"></img></a>
             </div>
-            <div class="song-title">
+            <div class="song-title-rec">
                 {{ song.name }}
             </div>
             <div class="song-genre">
@@ -25,4 +19,3 @@
         {% endfor %}
     </ul>
 </div>
-{% endblock %}

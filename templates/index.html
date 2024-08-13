@@ -5,45 +5,42 @@
 {% endblock %}
 
 {% block content %}
-<div class="main-content">
-    <h1 class="desc">Music Genre Classification</h1>
-    <h4 class="desc2">GenreVim performs genre classification of music from <a
-            title="Original: YouTube Vector:  Jarould, Public domain, via Wikimedia Commons"
-            href="https://www.youtube.com/" target="_blank"><img width="25" class="youtube"
-                alt="YouTube full-color icon (2017)"
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/512px-YouTube_full-color_icon_%282017%29.svg.png?20240107144800"></a>
-        YouTube</h4>
-    <form hx-post="/predict" hx-target="#result" hx-swap="innerHTML" hx-indicator="#loader" class="form">
-        <input type="text" id="url" name="url" required placeholder="Enter Youtube URL">
-        <button type="submit" class="button">Predict Genre</button>
-    </form>
-    <div id="result"></div>
-    <div id="loader">
-        <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity=".25" />
-            <path
-                d="M10.14,1.16a11,11,0,0,0-9,8.92A1.59,1.59,0,0,0,2.46,12,1.52,1.52,0,0,0,4.11,10.7a8,8,0,0,1,6.66-6.61A1.42,1.42,0,0,0,12,2.69h0A1.57,1.57,0,0,0,10.14,1.16Z"
-                class="spinner_ajPY" />
-        </svg>
-    </div>
-    <div class="recent-songs">
-        <h3 class="recent-songs-heading">Recent Songs</h3>
-        <ul class="recent-songs-list">
-            {% for song in recent_songs %}
-            <li>
-                <div class="embed-container">
-                    <a href="{{ song.youtube_link }}" target="_blank"><img width="480" height="270"
-                            src="{{ song.thumbnail_url }}"></img></a>
-                </div>
-                <div class="song-title">
-                    {{ song.name }}
-                </div>
-                <div class="song-genre">
-                    {{ song.genre }}
-                </div>
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
+<h1 class="desc">Music Genre Classification</h1>
+<h4 class="desc2">GenreVim performs genre classification of music from <a
+        title="Original: YouTube Vector:  Jarould, Public domain, via Wikimedia Commons" href="https://www.youtube.com/"
+        target="_blank"><img width="25" class="youtube" alt="YouTube full-color icon (2017)"
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/512px-YouTube_full-color_icon_%282017%29.svg.png?20240107144800"></a>
+    YouTube</h4>
+<form hx-post="/predict" hx-target="#result" hx-swap="innerHTML" hx-indicator="#loader" class="form">
+    <input type="text" id="url" name="url" required placeholder="Enter Youtube URL">
+    <button type="submit" class="button">Predict Genre</button>
+</form>
+<div id="result"></div>
+<div id="loader">
+    <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity=".25" />
+        <path
+            d="M10.14,1.16a11,11,0,0,0-9,8.92A1.59,1.59,0,0,0,2.46,12,1.52,1.52,0,0,0,4.11,10.7a8,8,0,0,1,6.66-6.61A1.42,1.42,0,0,0,12,2.69h0A1.57,1.57,0,0,0,10.14,1.16Z"
+            class="spinner_ajPY" />
+    </svg>
+</div>
+<div class="recent-songs">
+    <h3 class="recent-songs-heading">Recent Songs</h3>
+    <ul class="recent-songs-list">
+        {% for song in recent_songs %}
+        <li>
+            <div class="embed-container">
+                <a href="{{ song.youtube_link }}" target="_blank"><img width="480" height="270"
+                        src="{{ song.thumbnail_url }}"></img></a>
+            </div>
+            <div class="song-title">
+                {{ song.name }}
+            </div>
+            <div class="song-genre">
+                {{ song.genre }}
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
 </div>
 {% endblock %}

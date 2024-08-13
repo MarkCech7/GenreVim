@@ -10,6 +10,7 @@ import os
 from datetime import datetime
 
 app = Flask(__name__)
+
 # creating db model
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///music_database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -43,7 +44,6 @@ def download_youtube_video(url):
     
     stream = yt.streams.filter(only_audio=True).first()
     out_file = stream.download(output_path="download/")
-    #embed_url = yt.embed_url
     thumbnail_url = yt.thumbnail_url
     return out_file, thumbnail_url
 
@@ -69,17 +69,9 @@ def prediction(wav_file):
     if music_prediction[0]['label'] == 'Non Music':
         return None, "The provided video does not contain music. Please try another video."
     
-    genre_classifier = pipeline("audio-classification", model="MarekCech/GenreVim-HuBERT-3")
+    genre_classifier = pipeline("audio-classification", model="MarekCech/GenreVim-Music-Classification-DistilHuBERT")
     genre_prediction = genre_classifier(data, sampling_rate=target_sr)
     return genre_prediction[0], None
-
-"""
-@app.route("/",methods=['GET', 'POST'])
-def index():
-    if request.method == 'POST':
-        url = request.form['url']
-
-""" 
 
 @app.route("/")
 def index():
@@ -101,7 +93,7 @@ def predict():
                 Song.genre == existing_song.genre,
                 Song.youtube_link != url
             ).order_by(Song.score.desc()).limit(3).all()
-            return render_template('predict.html', genre=f"Genre of '{existing_song.name}' is '{existing_song.genre}'", recommendations=recommendations, thumbnail_url=existing_song.thumbnail_url)
+            return render_template('predict.html', title=existing_song.name, genre=existing_song.genre, recommendations=recommendations, thumbnail_url=existing_song.thumbnail_url)
         
         file, thumbnail_url = download_youtube_video(url)
         title = get_video_title(url)
@@ -126,7 +118,7 @@ def predict():
         os.remove(file)  
         os.remove(wav_file)
 
-        return render_template('predict.html', genre=f"Genre of {title}'is {genre}", recommendations=recommendations, thumbnail_url=thumbnail_url)
+        return render_template('predict.html', title=title, genre=genre, recommendations=recommendations, thumbnail_url=thumbnail_url)
     except ValueError as ve:
         return render_template('error.html', message=str(ve))
     except Exception as e:
