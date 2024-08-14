@@ -33,7 +33,7 @@ with app.app_context():
 
 def download_youtube_video(url):
     try:
-        yt = YouTube(url, use_oauth=True, allow_oauth_cache=True)
+        yt = YouTube(url, use_oauth=False, allow_oauth_cache=True)
     except Exception as e:
         raise ValueError("Invalid YouTube URL.")
        

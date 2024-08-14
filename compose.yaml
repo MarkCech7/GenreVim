@@ -1,0 +1,12 @@
+services:
+  web: 
+    build:
+      context: .
+      target: builder
+    volumes: 
+      - db_data:/app/instance
+    ports: 
+      - '5000:5000'
+
+volumes:
+  db_data:
