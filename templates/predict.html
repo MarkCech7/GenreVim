@@ -1,5 +1,6 @@
 <h2 class="prediction"><span class="predicttext">Genre of</span> {{ title }} <span class="predicttext">is</span> {{
     genre }}.</h2>
+{% if recommendations %}
 <div class="recommended-songs">
     <h3 class="recommended-songs-heading">Recommendations</h3>
     <ul class="recommended-songs-list">
@@ -19,3 +20,4 @@
         {% endfor %}
     </ul>
 </div>
+{% endif %}
